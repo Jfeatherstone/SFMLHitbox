@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jack/cpp-workspace/SFMLHitbox/src/Hitbox.cpp
+Hitbox.hpp
+/home/jack/cpp-workspace/SFMLHitbox/src/Hitbox.hpp
+
+/home/jack/cpp-workspace/SFMLHitbox/src/Hitbox.hpp
+SFML/Graphics.hpp
+-
+string
+-
+iostream
+-
+sstream
+-
+

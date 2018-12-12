@@ -1,0 +1,3 @@
+/home/jack/cpp-workspace/SFMLHitbox/CMakeFiles/rebuild_cache.dir
+/home/jack/cpp-workspace/SFMLHitbox/CMakeFiles/hitbox.dir
+/home/jack/cpp-workspace/SFMLHitbox/CMakeFiles/edit_cache.dir

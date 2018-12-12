@@ -45,35 +45,61 @@ SPECIFICATIONS:
 SFML 2.5.1
 2018 Q4
 
-This class's purpose is to create a grouping of FloatRect variables that represent any given
-texture to a user-specified degree of accuracy, which is inversely related to performance impact.
+This class's purpose is to create a polygon variable that represents any given
+texture to a user-specified to a hopefully good amount of detail
 */
 
-class Hitbox {
+enum class Detail {More, Less};
+
+class Hitbox: public ConvexShape {
 
 private:
-
-	/*
-	We may as well store the texture variable that we are passed in for future use
-	*/
-	Texture m_texture;
 
 	/*
 	We also need the center of the sprite to properly detect collisions
 	*/
 	Vector2f m_center;
 
-	/*
-	Since we may not want or need to define every pixel as its own rectangle, we want to be able to define
-	some integer that represents the accuracy or number of rectangles in the hitbox
-	*/
-	int m_numberOfRectangles;
+	Vector2i m_textureSize;
 
 	/*
-	The main piece of the class will be a vector of varying length that will hold several FloatRect
-	objects.
+	This will define whether we want to outline every detail in our sprite or just get
+	the general shape of it. The big difference here is whether we outline concave parts
+	of the texture or not.
 	*/
-	vector<FloatRect> m_rects;
+	Detail m_detail;
+
+	/*
+	The actual hitbox itself will be of the type sf::ConvexShape
+	I decided to go with extending the ConvexShape class onto this one, so we don't actually
+	need this variable, we can just use this
+	*/
+	//ConvexShape m_hitbox;
+	int m_numVerticies;
+
+	/*
+	We also may want to access the array of colors in the texture, so we store that
+
+	Along with this, we also want have a minimal version of the pixels that only states whether they
+	will be included in the hitbox calcuation or not, denoted by 0 or 1
+	*/
+	vector<Color> m_pixels;
+	vector<int> m_hitboxInclude;
+
+	vector<Vector2f> m_hitboxVertices;
+	/*
+	Since we are checking through every pixel and can get its exact rgb code, we can whitelist certain
+	colors if we want to have a visual there but no corresponding hitbox.
+	*/
+	vector<Color> m_ignoredColors;
+
+	/*
+	And a method to turn a texture in a vector of colors
+	*/
+	void getPixels();
+	bool contains(vector<Color> vec, Color c);
+	bool hitboxContainsPoint(Vector2f point);
+	void countVerticies();
 public:
 
 	/*
@@ -82,7 +108,7 @@ public:
 	and one that just creates the variable to be generated later
 	*/
 	Hitbox();
-	Hitbox(Texture texture, int numberOfRectangles, bool generateNow = true);
+	Hitbox(Texture* texture, Detail detail, bool generateNow = true);
 
 	/*
 	Of course the point of this class is to be able to detect collisions with other objects,
@@ -102,21 +128,20 @@ public:
 
 	This position should be the center of the sprite on the screen
 	*/
-	void generate(Vector2f spriteCenter = Vector2f(-1, -1));
+	void generate();
+
+	/*
+	We also want to just be able to update the position of the hitboxes, not redraw all of them
+	*/
+	void update(Vector2f spriteCenter = Vector2f(-1, -1));
 
 	/*
 	Several setters/getters for general use/modification:
 	*/
 	
-	void setTexture(Texture texture);
-	void setNumberOfRectangles(int numRects);
-	void setCenter(Vector2f center);
+	ConvexShape getDrawable();
 
-	Texture getTexture();
-	int getNumberOfRectangles();
-	Vector2f getCenter();
+	void addColorToIgnore(Color c);
 
-	vector<FloatRect> getFloatRects();
-	vector<RectangleShape> getHitboxDrawable();
-
+	void drawHitboxText();
 };
